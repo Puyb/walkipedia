@@ -1,7 +1,7 @@
 import md5 from 'md5-hash'
 
 export const getPageDom = async page => {
-    const response = await fetch(`https://fr.wikipedia.org/w/api.php?action=parse&format=json&page=${page}&prop=text&formatversion=2&origin=*`)
+    const response = await fetch(`https://fr.wikipedia.org/w/api.php?action=parse&format=json&page=${page}&prop=text&formatversion=2&origin=*&redirects`)
     const { parse: { text } } = await response.json()
     const doc = document.createElement('span')
     const fragment = document.createDocumentFragment()
@@ -33,3 +33,21 @@ export const getDayPages = async today => {
         target: pages[(hash / pages.length) % pages.length]
     }
 }
+
+export const NAMESPACES = [
+    'Utilisateur',
+    'Wikipédia',
+    'Fichier',
+    'MediaWiki',
+    'Modèle',
+    'Aide',
+    'Catégorie',
+    'Portail',
+    'Projet',
+    'Référence',
+    'TimedText',
+    'Module',
+    'Gadget',
+    'Définition de gadget',
+    'Sujet'
+]

@@ -11,6 +11,7 @@ const history = reactive([
 const missedHistory = reactive([])
 const page = computed(() => history[history.length - 1] || '')
 const score = ref(0)
+const copiedToClipbaord = ref(false)
 
 // game mechanics
 const changePage = (newPage, pos = 0, size) => {
@@ -25,7 +26,11 @@ const backPage = () => {
     history.splice(-1, 1)
     if (!missedHistory.includes(oldPage)) missedHistory.push(oldPage)
 }
-
+const shareVictory = async event => {
+    const text = `Je me suis rendu de 🏁 ${history[0]} à 🎯 ${target.value} en seulement ${history.length} étapes et ${score.value} points sur ${location.href.replace(/#.*/, '')}.`
+    await navigator.clipboard.writeText(text)
+    copiedToClipbaord.value = true
+}
 
 
 // hash navigation
@@ -104,7 +109,11 @@ onBeforeMount(async () => {
   </main>
   <div id="modal" v-show="target === page">
       <h1>🏆 Bravo 🏆</h1>
-      Vous vous êtes rendu de 🏁 <strong>{{history[0]}}</strong> à 🎯 <strong>{{target}}</strong> en seulement {{history.length}} étapes et {{score}} points !
+      <div>
+          Vous vous êtes rendu de 🏁 <strong>{{history[0]}}</strong> à 🎯 <strong>{{target}}</strong> en seulement {{history.length}} étapes et {{score}} points !
+      </div>
+      <button @click="shareVictory">Partager mon résultat</button>
+      <span v-if="copiedToClipbaord">Résultat copié dans le presse-papier</span>
   </div>
 </template>
 
@@ -165,6 +174,9 @@ header h1 {
     padding: 10px;
     border-radius: 5px;
     border-style: solid;
+}
+#modal button {
+    margin: 10px;
 }
 #back {
     display: inline-block;

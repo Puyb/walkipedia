@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch, onMounted } from 'vue'
-import { getPageDom } from '../wikipedia'
+import { getPageDom, NAMESPACES } from '../wikipedia'
 const props = defineProps({
   page: {
     type: String,
@@ -18,7 +18,8 @@ const fetchPage = async (page) => {
     }
     for (const a of Array.from(doc.querySelectorAll('a'))) {
         const href = a.getAttribute('href')
-        if (!href || href.startsWith('/wiki/')) continue;
+        if (!href) continues;
+        if (href.startsWith('/wiki/') && !NAMESPACES.find(n => href.startsWith(`/wiki/${n}:`))) continue;
         a.insertAdjacentHTML('afterend', a.innerHTML)
         a.parentNode.removeChild(a)
     }
