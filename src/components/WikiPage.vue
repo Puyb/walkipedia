@@ -10,6 +10,7 @@ const props = defineProps({
 const emit = defineEmits(['changePage'])
 const html = ref('')
 const fetchPage = async (page) => {
+    if (!page) return
     html.value = ''
     const doc = await getPageDom(page)
     for (const element of Array.from(doc.querySelectorAll('div figure, div div, .noprint, .mw-editsection, .infobox_v2, .infobox_v3'))) {

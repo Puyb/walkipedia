@@ -5,18 +5,16 @@ import History from './components/History.vue'
 import WikiPage from './components/WikiPage.vue'
 
 // state
-const target = ref('Atome')
+const target = ref('-')
 const history = reactive([
-    'Autriche'
 ])
 const missedHistory = reactive([])
-const page = computed(() => history[history.length - 1])
+const page = computed(() => history[history.length - 1] || '')
 const score = ref(0)
 
 // game mechanics
 const changePage = (newPage, pos = 0, size) => {
-    if (page.value === newPage) return;
-    console.log('newPage', newPage, 'pos', pos, 'size', size)
+    if (!newPage || page.value === newPage) return;
     history.push(newPage)
     const missedPos = missedHistory.indexOf(newPage)
     if (missedPos >= 0) missedHistory.splice(missedPos, 1)
@@ -34,7 +32,10 @@ const backPage = () => {
 watch(page, (value) => {
     location.hash = `#${page.value}`
 })
-onMounted(() => {
+let gameInitResolve
+let gameInitPromise = new Promise(resolve => { gameInitResolve = resolve })
+onMounted(async () => {
+    await gameInitPromise
     location.hash = `#${page.value}`
     window.addEventListener('hashchange', () => {
         const newPage = decodeURIComponent(location.hash.replace(/^#/, ''))
@@ -60,21 +61,23 @@ watch([target, history, missedHistory, score], () => {
 })
 onBeforeMount(async () => {
     const state = $cookies.get('status')
-    // new game
     const pages = await getDayPages(today)
 
     if (state && state.today === today && state.history[0] === pages.start && state.target === pages.target) {
+        // restore game
         target.value = state.target
-        history.push(...state.history.slice(1))
+        history.push(...state.history)
         missedHistory.push(...state.missedHistory)
         score.value = state.score
+        gameInitResolve()
         return
     }
-    // reste game
+    // reset game
     history.splice(0, history.length, pages.start)
     target.value = pages.target
     score.value = 0
     missedHistory.splice(0, missedHistory.length)
+    gameInitResolve()
 })
     
 </script>
@@ -83,6 +86,7 @@ onBeforeMount(async () => {
   <header>
       <h1>Walkipedia</h1>
       <div class="target"> Rendez vous sur la page 🎯 <strong><a :href="`https://fr.wikipedia.org/wiki/${target}`" target="_blank">{{target}}</a></strong> avec le moins de clics possibles</div>
+      <iframe id="github" src="https://ghbtns.com/github-btn.html?user=Puyb&repo=walkipedia&type=star&size=large" frameborder="0" scrolling="0" width="80" height="30" title="GitHub"></iframe>
   </header>
 
   <main>
@@ -166,5 +170,10 @@ header h1 {
     display: inline-block;
     margin-right: 10px;
     font-size: 2em;
+}
+#github {
+    position: absolute;
+    right: 10px;
+    top: 5px;
 }
 </style>
