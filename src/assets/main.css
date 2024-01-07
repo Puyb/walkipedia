@@ -1,0 +1,19 @@
+body,
+html {
+  padding: 0;
+  margin: 0;
+  font-family: Liberation Sans,sans-serif;
+  scroll-behavior: smooth;
+  background-color:#202020;
+  color: #ddd;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+* {
+  box-sizing: border-box;
+}
+article a {
+    color: #3333FF;
+}
