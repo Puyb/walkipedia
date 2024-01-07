@@ -112,6 +112,9 @@ onBeforeMount(async () => {
       <div>
           Vous vous êtes rendu de 🏁 <strong>{{history[0]}}</strong> à 🎯 <strong>{{target}}</strong> en seulement {{history.length}} étapes et {{score}} points !
       </div>
+      <div>
+          Rendez vous demain pour un nouveau défi ! 👋
+      </div>
       <button @click="shareVictory">Partager mon résultat</button>
       <span v-if="copiedToClipbaord">Résultat copié dans le presse-papier</span>
   </div>
