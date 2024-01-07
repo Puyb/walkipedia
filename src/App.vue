@@ -54,7 +54,8 @@ onMounted(async () => {
 
 // game status
 const $cookies = inject('$cookies');
-const today = new Date(Math.ceil(Date.now() / 86400 / 1000)).toISOString();
+const DAY = 86400 * 1000
+const today = new Date(Math.floor(Date.now() / DAY) * DAY ).toISOString();
 watch([target, history, missedHistory, score], () => {
     $cookies.set('status', JSON.stringify({
         target: target.value,
