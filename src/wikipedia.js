@@ -10,7 +10,9 @@ export const getPageDom = async page => {
     return doc
 }
 
+let pagesCache
 export const getPages = async  () => {
+    if (pagesCache) return pagesCache
     const specialPage = 'Wikipédia:RAW/2021-03-01/Articles_de_qualité'
     const doc = await getPageDom(specialPage)
     const pages = []
@@ -22,6 +24,7 @@ export const getPages = async  () => {
         if (!title) continue;
         pages.push(title)
     }
+    pagesCache = pages
     return pages
 }
 
